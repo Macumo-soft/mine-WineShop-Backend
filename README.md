@@ -6,8 +6,6 @@ docker-compose up -d --build
 
 docker-compose exec php bash
 
-composer create-project laravel/laravel .
-
 composer install
 
 cp .env.example .env
