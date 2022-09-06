@@ -16,17 +16,18 @@ return new class extends Migration
         Schema::create('m_wine_delivery', function (Blueprint $table) {
             // Columns
             $table->id()->autoIncrement();
-            $table->string('stocks', 3);
-            $table->string('delivery_period', 2);
-            $table->integer('wine_detail_id');
+            $table->smallInteger('stocks');
+            $table->smallInteger('delivery_period');
+            $table->integer('wine_id');
 
             // Foreign Key
-            $table->foreign('wine_detail_id')->references('id')->on('m_wine_detail');
+            $table->foreign('wine_id')->references('id')->on('m_wine');
 
             // Common
             $table->timestamps();
             $table->string('created_user', 50);
             $table->string('updated_user', 50);
+            $table->boolean('delete_flg')->default(false);
         });
     }
 

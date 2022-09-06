@@ -16,12 +16,13 @@ return new class extends Migration
         Schema::create('m_wine_type', function (Blueprint $table) {
             // Columns
             $table->id()->autoIncrement();
-            $table->string('type_name', 10);
+            $table->string('name', 10);
 
             // Common
             $table->timestamps();
             $table->string('created_user', 50);
             $table->string('updated_user', 50);
+            $table->boolean('delete_flg')->default(false);
         });
     }
 

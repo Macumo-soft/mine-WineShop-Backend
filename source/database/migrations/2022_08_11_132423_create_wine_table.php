@@ -19,11 +19,16 @@ return new class extends Migration
             $table->string('name', 100);
             $table->string('img_url', 200);
             $table->float('price', 5, 2);
+            $table->integer('wine_type_id');
+
+            // Foreign Key
+            $table->foreign('wine_type_id')->references('id')->on('m_wine_type');
 
             // Common
             $table->timestamps();
             $table->string('created_user', 50);
             $table->string('updated_user', 50);
+            $table->boolean('delete_flg')->default(false);
         });
     }
 
@@ -34,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('m_wine');
+        // Schema::dropIfExists('m_wine');
     }
 };

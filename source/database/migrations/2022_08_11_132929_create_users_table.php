@@ -17,12 +17,14 @@ return new class extends Migration
             // Columns
             $table->id()->autoIncrement();
             $table->string('email_address', 100);
+            $table->string('username', 50);
             $table->string('password', 64);
 
             // Common
             $table->timestamps();
             $table->string('created_user', 50);
             $table->string('updated_user', 50);
+            $table->boolean('delete_flg')->default(false);
         });
     }
 
@@ -33,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('t_users');
+        // Schema::dropIfExists('t_users');
     }
 };

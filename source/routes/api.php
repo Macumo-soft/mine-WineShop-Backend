@@ -20,5 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/wine', [WineController::class, 'index']);
-Route::get('/wine/getWineList/{id}', [WineController::class, 'getWineList']);
-Route::get('/wine/getWineDetail/{id}', [WineController::class, 'getWineDetail']);
+Route::get('/wine/getWineList', [WineController::class, 'getWineList']);
+Route::get('/wine/getWineDetail', [WineController::class, 'getWineDetail']);

@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('t_reviews', function (Blueprint $table) {
            // Columns
            $table->id()->autoIncrement();
-           $table->string('review_score', 1);
+           $table->smallInteger('review_score');
+           $table->string('review_title', 60);
            $table->text('review_comment');
            $table->integer('user_id');
            $table->integer('wine_id');
@@ -29,6 +30,7 @@ return new class extends Migration
            $table->timestamps();
            $table->string('created_user', 50);
            $table->string('updated_user', 50);
+           $table->boolean('delete_flg')->default(false);
         });
     }
 

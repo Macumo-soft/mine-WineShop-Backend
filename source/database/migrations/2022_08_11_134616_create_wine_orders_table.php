@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('t_ordered_wine', function (Blueprint $table) {
            // Columns
            $table->id()->autoIncrement();
-           $table->string('quantity', 3);
+           $table->smallInteger('quantity');
            $table->timestamp('delivery_date');
            $table->integer('wine_id');
            $table->integer('user_id');
@@ -29,6 +29,7 @@ return new class extends Migration
            $table->timestamps();
            $table->string('created_user', 50);
            $table->string('updated_user', 50);
+           $table->boolean('delete_flg')->default(false);
         });
     }
 
