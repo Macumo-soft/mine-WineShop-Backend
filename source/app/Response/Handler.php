@@ -3,6 +3,8 @@
 namespace App\Response;
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
+
 
 class Handler extends Response
 {
@@ -58,7 +60,7 @@ class Handler extends Response
 
         // If $status_config does not exist, return unexpected error
         if(count($status_config) !== 1){
-            return 'Unexpected error occured, please check logs';
+            return 'Unexpected error occured, please check failure logs';
         }
 
         // Get string type message from an array
@@ -67,7 +69,8 @@ class Handler extends Response
         $data = array(
             'status_code' => $status_code,
             'status_message' => $status_message,
-            'message' => json_decode($message),
+            'message' => $message,
+            // 'message' => json_decode($message),
             'data' => $data,
         );
 

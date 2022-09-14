@@ -4,61 +4,53 @@ namespace App\Http\Controllers;
 
 use App\Models\Reviews;
 use App\Models\Wine;
-use App\Validations\Handler as ValidationHandler;
 use App\Response\Handler as ResponseHandler;
-use DB;
+use App\Validations\Handler as ValidationHandler;
 use Illuminate\Http\Request;
-use Validator;
 
 class WineController extends Controller
 {
     public function getWineList(Request $request)
     {
         try {
-            $request_param = array(
-                'filterId' => $request['filterId'],
-                'wineType' => $request['wineTypeId'],
-                'wineName' => $request['wineName'],
-                'customersReview' => $request['customersReview'],
-                'priceFrom' => $request['priceFrom'],
-                'priceTo' => $request['priceTo'],
-            );
+            // Define validation rules
+            $rules = [
+                'filterId' => 'digits:1',
+                'wineType' => 'digits:2',
+                'wineName' => 'string',
+                'customersReview' => '',
+                'priceFrom' => '',
+                'priceTo' => '',
+            ];
 
-            // Validaton
-            if (empty($request_param) || isset($request_param)) {
-                throw new Exception("Error Processing Request", 1);
+            // Validation Check
+            ValidationHandler::validate($request, $rules);
 
-                return $request_param;
-            }
+            // Check if value exist
+            ValidationHandler::checkArrayValueExists($request);
 
-            $filterId = $request['filterId'];
-            $wineType = $request['wineTypeId'];
-            $wineName = $request['wineName'];
-            $customersReview = $request['customersReview'];
-            $priceFrom = $request['priceFrom'];
-            $priceTo = $request['priceTo'];
+            // Check if there is no unknown paramter key
+            ValidationHandler::checkUnknownParameter($request, $rules);
 
-            return $request;
+            // Request parameters
+            $request_params = $this->requestHandler($request, $rules);
+
+            // When filterId Exists - get Highest Rate
+            // When customersReview Exists - get customersReview
+            // When priceFrom, priceTo Exists - get price Range
 
             // Search by Wine Name
-            $wineResult = Wine::select(
-                'm_wine.id as wineId',
-                'm_wine.name as wineName',
-                'm_wine.img_url as wineImageUrl',
-                DB::raw('AVG(t_reviews.review_score) as reviewAverage'),
-            )
-                ->join('t_reviews', 'm_wine.id', '=', 't_reviews.wine_id')
-                ->where('m_wine.id', '=', $wineType)
-                ->groupBy('m_wine.id')
-                ->orderBy('m_wine.id')
-                ->get();
+            $wineResult = Wine::selectWineList($request_params);
 
             return $wineResult;
 
         } catch (\Throwable$th) {
-            //throw $th;
             return $th;
-            return ApiResponser::response($statusCode = 400, $message = "test error");
+            // Return error
+            return ResponseHandler::error(
+                $th->getCode(),
+                $th->getMessage()
+            );
         }
 
     }
@@ -81,10 +73,10 @@ class WineController extends Controller
             $request_params = $this->requestHandler($request, $rules);
 
             // Get wine details information by wineId
-            $wineDetail = Wine::getWineDetail($request_params);
+            $wineDetail = Wine::selectWineDetail($request_params);
 
             // Get review list by wineId
-            $reviewList = Reviews::getWineReviews($request_params);
+            $reviewList = Reviews::selectWineReviews($request_params);
 
             // Store values into response parameters
             $response['wineDetailList'] = $wineDetail;
@@ -97,7 +89,7 @@ class WineController extends Controller
                 $th->getMessage()
             );
         }
-        logger('test', ['foo' => 'bar']);
+
         // Return success
         return ResponseHandler::success($response);
     }

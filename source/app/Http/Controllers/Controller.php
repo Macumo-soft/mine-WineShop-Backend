@@ -12,7 +12,14 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function requestHandler(Request $request, array $rules)
+    /**
+     * Create array type variables from request parameters 
+     *
+     * @param Request $request
+     * @param array $rules
+     * @return array
+     */
+    public function requestHandler(Request $request, array $rules): array
     {
         // Get all key list from an array
         $key_list = array_keys($rules);

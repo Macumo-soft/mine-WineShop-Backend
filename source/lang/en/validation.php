@@ -153,6 +153,8 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'check_array_value_exist' => 'No value exists in request parameters',
+        'check_unknown_parameter' => 'Unknown key exists in request parameters'
     ],
 
     /*

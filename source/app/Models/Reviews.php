@@ -9,11 +9,16 @@ use DB;
 
 class Reviews extends Model
 {
-    // use HasFactory;
     // Table name
     protected $table = 't_reviews';
 
-    public static function getWineReviews($request_params)
+    /**
+     * Select wine review information
+     *
+     * @param [type] $request_params
+     * @return void
+     */
+    public static function selectWineReviews($request_params)
     {
         $result = Reviews::select(
             't_reviews.wine_id as wineId',
