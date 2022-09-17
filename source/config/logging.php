@@ -53,25 +53,38 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['daily', 'failure'],
+            'channels' => ['daily'],
             'ignore_exceptions' => false,
+        ],
+
+        'single' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/info/info.log'),
+            'level' => 'info',
+            'days' => 2,
         ],
 
         'daily' => [
             'driver' => 'daily',
+            'path' => storage_path('logs/failure/failure.log'),
+            'level' => 'error',
+            'days' => 2,
+        ],
+
+        'success' => [
+            'driver' => 'daily',
             'path' => storage_path('logs/success/success.log'),
-            'level' => env('LOG_LEVEL', 'debug'),
-            'days' => 14,
-            'permission' => 0664,
+            'level' => 'info',
+            'days' => 1,
         ],
 
         'failure' => [
             'driver' => 'daily',
             'path' => storage_path('logs/failure/failure.log'),
             'level' => 'error',
-            'days' => 7,
-            'permission' => 0664,
+            'days' => 1,
         ],
+
 
         'slack' => [
             'driver' => 'slack',

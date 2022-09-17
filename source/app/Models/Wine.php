@@ -12,7 +12,7 @@ class Wine extends Model
     protected $table = 'm_wine';
 
     /**
-     * Undocumented function
+     * Select wine list
      *
      * @param Request $request
      * @return void
@@ -52,6 +52,56 @@ class Wine extends Model
                 return $query->havingRaw('Round(AVG(t_reviews.review_score), 1) = ?', [$request['customersReview']]);
             })
             ->orderBy('m_wine.id')
+            ->get();
+
+        return $result;
+    }
+
+    /**
+     * Select top 8 wines that filteredId condition
+     *
+     * @param Request $request
+     * @return void
+     */
+    public static function selectFilteredWineList(array $request): object
+    {
+        // Store filterId value
+        $filter_id = $request['filterId'];
+
+        $result = Wine::select(
+            'm_wine.id as wineId',
+            'm_wine.name as wineName',
+            'm_wine.img_url as wineImageUrl',
+            DB::raw('Round(AVG(t_reviews.review_score), 1) as review'),
+            'm_wine.price as winePrice',
+        )
+            ->join('m_wine_type', 'm_wine.wine_type_id', '=', 'm_wine_type.id')
+            ->join('t_reviews', 'm_wine.id', '=', 't_reviews.wine_id')
+
+            ->groupBy('m_wine.id')
+
+        // Order by condition
+        // filterId: 1 [Top rate] - Highest review rate
+            ->when($filter_id == 1, function ($query) use ($request) {
+                return $query->orderBy('review', 'desc');
+            })
+
+        // filterId: 2 [Recommend] - Most reviews
+            ->when($filter_id == 2, function ($query) use ($request) {
+                return $query->orderByRaw('count(t_reviews.id)');
+            })
+
+        // filterId: 3 [Sale] - Cheapest price
+            ->when($filter_id == 3, function ($query) use ($request) {
+                return $query->orderBy('m_wine.price', 'asc');
+            })
+
+        // filterId: 4 [New] - Latest update date
+            ->when($filter_id == 4, function ($query) use ($request) {
+                return $query->orderby('m_wine.updated_at', 'desc');
+            })
+            ->orderBy('m_wine.id')
+            ->limit(8)
             ->get();
 
         return $result;

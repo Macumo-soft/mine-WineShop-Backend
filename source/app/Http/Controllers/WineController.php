@@ -12,15 +12,18 @@ class WineController extends Controller
 {
     public function getWineList(Request $request)
     {
+        // Response
+        $response = [];
+
         try {
             // Define validation rules
             $rules = [
                 'filterId' => 'digits:1',
                 'wineType' => 'digits:2',
                 'wineName' => 'string',
-                'customersReview' => '',
-                'priceFrom' => '',
-                'priceTo' => '',
+                'customersReview' => 'string',
+                'priceFrom' => 'digits_between:1,3',
+                'priceTo' => 'digits_between:1,3',
             ];
 
             // Validation Check
@@ -29,29 +32,31 @@ class WineController extends Controller
             // Check if value exist
             ValidationHandler::checkArrayValueExists($request);
 
-            // Check if there is no unknown paramter key
+            // Check if there is no unknown parameter key
             ValidationHandler::checkUnknownParameter($request, $rules);
 
             // Request parameters
             $request_params = $this->requestHandler($request, $rules);
+            
+            if (!empty($request_params['filterId'])) {
+                // Search wine list by filterId condition
+                $response['wineList'] = Wine::selectFilteredWineList($request_params);
 
-            // When filterId Exists - get Highest Rate
-            // When customersReview Exists - get customersReview
-            // When priceFrom, priceTo Exists - get price Range
-
-            // Search by Wine Name
-            $wineResult = Wine::selectWineList($request_params);
-
-            return $wineResult;
+            } else {
+                // Search wines with other request parameters given
+                $response['wineList'] = Wine::selectWineList($request_params);
+            }
 
         } catch (\Throwable$th) {
-            return $th;
             // Return error
             return ResponseHandler::error(
                 $th->getCode(),
                 $th->getMessage()
             );
         }
+
+        // Return success
+        return ResponseHandler::success($response);
 
     }
 
