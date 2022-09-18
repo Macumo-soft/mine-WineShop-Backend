@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\WineController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/wine', [WineController::class, 'index']);
+/**
+ * WineController
+ */
 Route::get('/wine/getWineList', [WineController::class, 'getWineList']);
 Route::get('/wine/getWineDetail', [WineController::class, 'getWineDetail']);
+
+/**
+ * ReviewController
+ */
+Route::get('/review/createReview', [ReviewController::class, 'createReview']);
+Route::get('/review/updateReview', [ReviewController::class, 'updateReview']);
+Route::get('/review/deleteReview', [ReviewController::class, 'deleteReview']);

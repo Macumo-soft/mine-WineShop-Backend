@@ -2,10 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use DB;
-
 
 class Reviews extends Model
 {
@@ -18,7 +15,7 @@ class Reviews extends Model
      * @param [type] $request_params
      * @return void
      */
-    public static function selectWineReviews($request_params)
+    public static function selectWineReviews(array $request_params)
     {
         $result = Reviews::select(
             't_reviews.wine_id as wineId',
@@ -32,5 +29,16 @@ class Reviews extends Model
             ->get();
 
         return $result;
+    }
+
+    public static function insertReview(array $request_params)
+    {
+        $result = Reviews::insert([
+            'user_id' => '1', // Get user from token
+            'wine_id' => $request_params['wineId'],
+            'review_score' => $request_params['reviewScore'],
+            'review_title' => $request_params['reviewTitle'],
+            'review_comment' => $request_params['reviewComment'],
+        ]);
     }
 }
