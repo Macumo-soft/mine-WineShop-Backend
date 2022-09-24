@@ -49,7 +49,7 @@ class ReviewController extends Controller
 
     public function updateReview(Request $request)
     {
-
+        return 'success';
     }
 
     public function deleteReview(Request $request)

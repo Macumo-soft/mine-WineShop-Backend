@@ -18,14 +18,13 @@ class Handler extends Response
      * @param array $data
      * @return array
      */
-    public static function success($data)
+    public static function success($data, $message = '')
     {
         // Export success log
         Logger::success_log('info', 200, '', $data);
-        // Log::channel('success')->info('error');
 
         // Return success response
-        return Handler::response(200, null, $data);
+        return Handler::response(200, $message, $data, $status = true);
     }
 
     /**
@@ -40,7 +39,7 @@ class Handler extends Response
         Logger::error_log('error', $status_code, $message, $data);
 
         // Return error response
-        return Handler::response($status_code, $message, $data);
+        return Handler::response($status_code, $message, $data, $status = false);
     }
 
     /****************************
@@ -53,9 +52,10 @@ class Handler extends Response
      * @param integer $status_code
      * @param [type] $message
      * @param array $data
+     * @param bool $data
      * @return array
      */
-    private static function response($status_code = 200, $message = null, $data = [])
+    private static function response($status_code = 200, $message = null, $data = [], $status)
     {
         // check if $message is object and transforms it into an array
         if (is_object($message)) {$message = $message->toArray();}
@@ -74,6 +74,7 @@ class Handler extends Response
         $status_message = array_column($status_config, 'message')[0];
 
         $data = array(
+            'status' => $status,
             'status_code' => $status_code,
             'status_message' => $status_message,
             'message' => $message,

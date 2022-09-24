@@ -23,7 +23,7 @@ return new class extends Migration
 
            // Foreign Key
            $table->foreign('wine_id')->references('id')->on('m_wine');
-           $table->foreign('user_id')->references('id')->on('t_users');
+           $table->foreign('user_id')->references('id')->on('users');
 
            // Common
            $table->timestamps();

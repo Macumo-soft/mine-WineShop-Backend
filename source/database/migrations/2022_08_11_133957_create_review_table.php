@@ -23,7 +23,7 @@ return new class extends Migration
            $table->integer('wine_id');
 
            // Foreign Key
-           $table->foreign('user_id')->references('id')->on('t_users');
+           $table->foreign('user_id')->references('id')->on('users');
            $table->foreign('wine_id')->references('id')->on('m_wine');
 
            // Common

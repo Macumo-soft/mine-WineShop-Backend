@@ -3,7 +3,9 @@
 namespace App\Validations;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Validator;
+use App\Validations\Handler as ValidationHandler;
 
 class Handler
 {
@@ -12,6 +14,17 @@ class Handler
     public function __construct()
     {
         $default_message = __('validation');
+    }
+
+    public static function default(Request $request, array $rules): void {
+        // Validation Check
+        ValidationHandler::validate($request, $rules);
+
+        // Check if value exist
+        ValidationHandler::checkArrayValueExists($request);
+
+        // Check if there is no unknown parameter key
+        ValidationHandler::checkUnknownParameter($request, $rules);
     }
 
     /**
@@ -34,7 +47,7 @@ class Handler
 
         // Throw an exception with status code 400 when validation fails
         if ($validator->fails()) {
-            
+
             throw new \Exception(
                 $validator->messages(),
                 config('response.status.bad_request.code')
@@ -44,7 +57,7 @@ class Handler
 
     /**
      * Check if there is value in each parameter
-     * true - There is at least one value in request 
+     * true - There is at least one value in request
      * false - There is no value in any parameter
      * @param Request $request
      * @return void
@@ -82,13 +95,32 @@ class Handler
         $key_list = array_keys($rules);
 
         // Throw an exception when value doesn't exist in any keys
-        foreach ($request as $key => $value){
-            if(!in_array($key, $key_list)){
+        foreach ($request as $key => $value) {
+            if (!in_array($key, $key_list)) {
                 throw new \Exception(
                     __('validation.custom.check_unknown_parameter'),
                     config('response.status.bad_request.code')
                 );
             }
+        }
+    }
+
+    /**
+     * Check if there is no paramater that doesn't match with rules key
+     *
+     * @param Request $request
+     * @param array $rules
+     * @return void
+     */
+    public static function checkAuthAttempt(Request $request): void
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (!Auth::attempt($credentials)) {
+            throw new \Exception(
+                "User not found, please check email & password",
+                config('response.status.bad_request.code')
+            );
         }
     }
 
