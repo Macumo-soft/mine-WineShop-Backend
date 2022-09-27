@@ -13,7 +13,7 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     /**
-     * Create array type variables from request parameters 
+     * Create array type variables from request parameters
      *
      * @param Request $request
      * @param array $rules

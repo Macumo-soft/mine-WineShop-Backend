@@ -20,9 +20,6 @@ class Handler
         // Validation Check
         ValidationHandler::validate($request, $rules);
 
-        // Check if value exist
-        ValidationHandler::checkArrayValueExists($request);
-
         // Check if there is no unknown parameter key
         ValidationHandler::checkUnknownParameter($request, $rules);
     }

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\PersonalAccessToken;
+use App\Request\Handler as RequestHandler;
 
 class User extends Authenticatable
 {
@@ -62,20 +63,29 @@ class User extends Authenticatable
 
     public static function getUserFromPlainToken(Request $request)
     {
-        $plainToken = $request['token'];
+        $plain_token = RequestHandler::getBearerToken($request);
 
         // Get user from plain token
-        $token = PersonalAccessToken::findToken($plainToken);
+        $token = PersonalAccessToken::findToken($plain_token);
         $user = $token->tokenable;
+
+        // Return error if user can't be found
+        if (empty($user)) {
+            throw new \Exception(
+                "Couldn't find any user from the token",
+                config('response.status.bad_request.code')
+            );
+        };
+
         return $user;
     }
 
     public static function getUserFromHashedToken(Request $request)
     {
-        $hashedToken = $request['token'];
+        $hashed_token = RequestHandler::getBearerToken($request);
 
         // Get user from hashedToken
-        $token = PersonalAccessToken::where('token', $hashedToken)->first();
+        $token = PersonalAccessToken::where('token', $hashed_token)->first();
         $user = $token->tokenable;
         return $user;
     }

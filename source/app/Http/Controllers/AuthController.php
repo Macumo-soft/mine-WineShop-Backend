@@ -23,14 +23,10 @@ class AuthController extends Controller
             ];
 
             // Validation Check
-            ValidationHandler::validate($request, $rules);
+            ValidationHandler::default($request, $rules);
 
             // Check if value exist
             ValidationHandler::checkArrayValueExists($request);
-
-            // Check if there is no unknown parameter key
-            ValidationHandler::checkUnknownParameter($request, $rules);
-
             // Handle authentication
             ValidationHandler::checkAuthAttempt($request);
 
@@ -91,7 +87,6 @@ class AuthController extends Controller
 
             // Delete user logically
             $user = User::getUserFromPlainToken($request);
-            // return $user;
 
         } catch (\Throwable$th) {
             // Return error
