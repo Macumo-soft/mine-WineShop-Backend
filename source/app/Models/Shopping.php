@@ -72,6 +72,7 @@ class Shopping extends Model
                     // Second Argument: Will be updated with this value if the records exists
                     [
                         'quantity' => $wineOrder['quantity'],
+                        'updated_at' => DB::raw('NOW()'),
                         'created_user' => "mine_backend",
                         'updated_user' => "mine_backend",
                     ]
@@ -102,8 +103,6 @@ class Shopping extends Model
         // Store array type JSON
         $cart_list = Shopping::select(
             't_carts.id as cart_id',
-            't_carts.wine_id as wineId',
-            't_carts.user_id as wineId',
         )
             ->where([
                 ['t_carts.user_id', '=', $user['id']],
@@ -122,7 +121,13 @@ class Shopping extends Model
             foreach ($cart_list as $cart_item) {
 
                 Shopping::where('t_carts.id', $cart_item['cart_id'])
-                    ->update(['t_carts.delete_flg' => true]);
+                    ->update(
+                        [
+                            't_carts.delete_flg' => true,
+                            't_carts.updated_at' => DB::raw('NOW()'),
+                            't_carts.updated_user' => $user['id'],
+                        ]
+                    );
             }
 
             // Commit transaction

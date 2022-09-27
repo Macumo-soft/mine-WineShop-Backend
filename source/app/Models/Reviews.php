@@ -3,11 +3,31 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class Reviews extends Model
 {
     // Table name
     protected $table = 't_reviews';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'review_score',
+        'review_title',
+        'review_comment',
+        'user_id',
+        'wine_id',
+        'created_at',
+        'updated_at',
+        'created_user',
+        'updated_user',
+        'delete_flg',
+    ];
 
     /**
      * Select wine review information
@@ -31,14 +51,110 @@ class Reviews extends Model
         return $result;
     }
 
-    public static function insertReview(array $request_params)
+    public static function createReview(Request $request)
     {
-        $result = Reviews::insert([
-            'user_id' => '1', // Get user from token
-            'wine_id' => $request_params['wineId'],
-            'review_score' => $request_params['reviewScore'],
-            'review_title' => $request_params['reviewTitle'],
-            'review_comment' => $request_params['reviewComment'],
-        ]);
+        // Get user from token
+        $user = User::getUserFromPlainToken($request);
+
+        try {
+            // Start DB transaction
+            DB::beginTransaction();
+
+            $result = Reviews::create([
+                'review_score' => $request['reviewScore'],
+                'review_title' => $request['reviewTitle'],
+                'review_comment' => $request['reviewComment'],
+                'user_id' => $user['id'], // Get user from token
+                'wine_id' => $request['wineId'],
+                'created_user' => $user['id'],
+                'updated_user' => $user['id'],
+            ]);
+
+            // Commit transaction
+            DB::commit();
+
+        } catch (\Throwable$th) {
+            // Rollback transaction
+            DB::rollback();
+
+            // Return error
+            throw new \Exception(
+                $th->getMessage(),
+                $th->getCode(),
+            );
+        }
+    }
+
+    public static function updateReview(Request $request)
+    {
+        // Get user from token
+        $user = User::getUserFromPlainToken($request);
+
+        try {
+            // Start DB transaction
+            DB::beginTransaction();
+
+            Reviews::where([
+                ['t_reviews.id', '=', $request['reviewId']],
+                ['t_reviews.delete_flg', '=', false],
+            ])
+                ->update(
+                    ['t_reviews.review_score' => $request['reviewScore'],
+                        't_reviews.review_title' => $request['reviewTitle'],
+                        't_reviews.review_comment' => $request['reviewComment'],
+                        't_reviews.updated_at' => DB::raw('NOW()'),
+                        't_reviews.updated_user' => $user['id'],
+                    ]
+                );
+
+            // Commit transaction
+            DB::commit();
+
+        } catch (\Throwable$th) {
+            // Rollback transaction
+            DB::rollback();
+
+            // Return error
+            throw new \Exception(
+                $th->getMessage(),
+                $th->getCode(),
+            );
+        }
+    }
+
+    public static function deleteReview(Request $request)
+    {
+        // Get user from token
+        $user = User::getUserFromPlainToken($request);
+
+        try {
+            // Start DB transaction
+            DB::beginTransaction();
+
+            Reviews::where([
+                ['t_reviews.id', '=', $request['reviewId']],
+                ['t_reviews.delete_flg', '=', false],
+            ])
+                ->update(
+                    [
+                        't_reviews.delete_flg' => true,
+                        't_reviews.updated_at' => DB::raw('NOW()'),
+                        't_reviews.updated_user' => $user['id'],
+                    ]
+                );
+
+            // Commit transaction
+            DB::commit();
+
+        } catch (\Throwable$th) {
+            // Rollback transaction
+            DB::rollback();
+
+            // Return error
+            throw new \Exception(
+                $th->getMessage(),
+                $th->getCode(),
+            );
+        }
     }
 }

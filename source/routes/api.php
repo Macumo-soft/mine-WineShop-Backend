@@ -46,9 +46,9 @@ Route::post('/shopping/confirmOrder', [ShoppingController::class, 'confirmOrder'
 /**
  * ReviewController
  */
-Route::get('/review/createReview', [ReviewController::class, 'createReview'])->middleware('auth:sanctum');
+Route::post('/review/createReview', [ReviewController::class, 'createReview'])->middleware('auth:sanctum');
 Route::post('/review/updateReview', [ReviewController::class, 'updateReview'])->middleware('auth:sanctum');
-Route::get('/review/deleteReview', [ReviewController::class, 'deleteReview'])->middleware('auth:sanctum');
+Route::post('/review/deleteReview', [ReviewController::class, 'deleteReview'])->middleware('auth:sanctum');
 
 // Route::group(['middleware' => ['logger']], function () {
 //     Route::get('/test/hoge', function() {
