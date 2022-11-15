@@ -66,7 +66,7 @@ class AuthController extends Controller
                 $th->getMessage()
             );
         }
-
+        
         // Return success
         return ResponseHandler::success($response);
     }

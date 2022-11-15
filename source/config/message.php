@@ -26,5 +26,7 @@ return [
         'not_implemented' => 'Not implemented',
         'bad_gateway' => 'Bad gateway',
         'service_unavailable' => 'Service unavailable',
+
+        'Unexcepted' => 'Unexcepted error occured'
     ],
 ];

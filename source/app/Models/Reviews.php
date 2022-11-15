@@ -38,13 +38,15 @@ class Reviews extends Model
     public static function selectWineReviews(array $request_params)
     {
         $result = Reviews::select(
-            't_reviews.wine_id as wineId',
-            't_reviews.user_id as userId',
+            't_reviews.wine_id as id',
+            'users.name as username',
             't_reviews.review_score as score',
             't_reviews.review_title as title',
             't_reviews.review_comment as comment',
-            't_reviews.updated_at as updateDate',
+            't_reviews.updated_at as updatedDate',
+            DB::raw('t_reviews.created_at <> t_reviews.updated_at as edited'),
         )
+            ->join('users', 't_reviews.user_id', '=', 'users.id')
             ->where('t_reviews.wine_id', '=', $request_params['wineId'])
             ->get();
 

@@ -19,7 +19,7 @@ class WineController extends Controller
             // Define validation rules
             $rules = [
                 'filterId' => 'digits:1',
-                'wineType' => 'digits:2',
+                'wineTypeId' => 'digits:2',
                 'wineName' => 'string',
                 'customersReview' => 'string',
                 'priceFrom' => 'digits_between:1,3',
@@ -28,9 +28,6 @@ class WineController extends Controller
 
             // Validation Check
             ValidationHandler::validate($request, $rules);
-
-            // Check if value exist
-            ValidationHandler::checkArrayValueExists($request);
 
             // Check if there is no unknown parameter key
             ValidationHandler::checkUnknownParameter($request, $rules);

@@ -20,18 +20,18 @@ class Wine extends Model
     public static function selectWineList(array $request): object
     {
         $result = Wine::select(
-            'm_wine.id as wineId',
-            'm_wine.name as wineName',
-            'm_wine.img_url as wineImageUrl',
-            DB::raw('Round(AVG(t_reviews.review_score), 1) as review'),
-            'm_wine.price as winePrice',
+            'm_wine.id as id',
+            'm_wine.name as name',
+            'm_wine.img_url as imageUrl',
+            DB::raw('Round(AVG(t_reviews.review_score), 1) as rate'),
+            'm_wine.price as price',
         )
             ->join('m_wine_type', 'm_wine.wine_type_id', '=', 'm_wine_type.id')
             ->join('t_reviews', 'm_wine.id', '=', 't_reviews.wine_id')
 
         // Where condition
-            ->when(!empty($request['wineType']), function ($query) use ($request) {
-                return $query->where('m_wine_type.id', '=', $request['wineType']);
+            ->when(!empty($request['wineTypeId']), function ($query) use ($request) {
+                return $query->where('m_wine_type.id', '=', $request['wineTypeId']);
             })
 
             ->when(!empty($request['wineName']), function ($query) use ($request) {
@@ -69,11 +69,11 @@ class Wine extends Model
         $filter_id = $request['filterId'];
 
         $result = Wine::select(
-            'm_wine.id as wineId',
-            'm_wine.name as wineName',
-            'm_wine.img_url as wineImageUrl',
-            DB::raw('Round(AVG(t_reviews.review_score), 1) as review'),
-            'm_wine.price as winePrice',
+            'm_wine.id as id',
+            'm_wine.name as name',
+            'm_wine.img_url as imageUrl',
+            DB::raw('Round(AVG(t_reviews.review_score), 1) as rate'),
+            'm_wine.price as price',
         )
             ->join('m_wine_type', 'm_wine.wine_type_id', '=', 'm_wine_type.id')
             ->join('t_reviews', 'm_wine.id', '=', 't_reviews.wine_id')
@@ -83,7 +83,7 @@ class Wine extends Model
         // Order by condition
         // filterId: 1 [Top rate] - Highest review rate
             ->when($filter_id == 1, function ($query) use ($request) {
-                return $query->orderBy('review', 'desc');
+                return $query->orderBy('rate', 'desc');
             })
 
         // filterId: 2 [Recommend] - Most reviews
@@ -116,15 +116,19 @@ class Wine extends Model
     public static function selectWineDetail(array $request_params): object
     {
         $result = Wine::select(
-            'm_wine.id as wineId',
-            'm_wine.name as wineName',
-            'm_wine.img_url as wineImageUrl',
+            'm_wine.id as id',
+            'm_wine.name as name',
+            'm_wine.img_url as imageUrl',
+            'm_wine.price as price',
             'm_wine_type.name as wineType',
-            DB::raw('Round(AVG(t_reviews.review_score), 1) as reviewAverage'),
+            DB::raw('Round(AVG(t_reviews.review_score), 1) as rate'),
             'm_wine_detail.centilitre as centilitre',
+            'm_wine_detail.description as description',
             'm_wine_detail.abv as abv',
             'm_wine_delivery.stocks as stocks',
-            'm_wine_delivery.delivery_period as deliveryPeriod',
+            // 'm_wine_delivery.delivery_period as deliveryPeriod',
+            DB::raw('(current_date + delivery_period) as deliveryDateFrom'),
+            DB::raw('(current_date + delivery_period + 3) as deliveryDateTo'),
         )
             ->join('m_wine_type', 'm_wine.wine_type_id', '=', 'm_wine_type.id')
             ->join('m_wine_detail', 'm_wine.id', '=', 'm_wine_detail.wine_id')
@@ -136,6 +140,7 @@ class Wine extends Model
                 'm_wine_type.name',
                 'm_wine_detail.centilitre',
                 'm_wine_detail.abv',
+                'm_wine_detail.description',
                 'm_wine_delivery.stocks',
                 'm_wine_delivery.delivery_period'
             )

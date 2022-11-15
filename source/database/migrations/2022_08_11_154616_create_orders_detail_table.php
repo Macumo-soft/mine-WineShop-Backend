@@ -13,17 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('t_ordered_wine', function (Blueprint $table) {
+        Schema::create('t_order_details', function (Blueprint $table) {
            // Columns
            $table->id()->autoIncrement();
-           $table->smallInteger('quantity');
-           $table->timestamp('delivery_date');
            $table->integer('wine_id');
-           $table->integer('user_id');
+           $table->integer('cart_id');
+           $table->smallInteger('quantity');
+           $table->integer('order_id');
 
            // Foreign Key
            $table->foreign('wine_id')->references('id')->on('m_wine');
-           $table->foreign('user_id')->references('id')->on('users');
+           $table->foreign('order_id')->references('id')->on('t_orders');
+           $table->foreign('cart_id')->references('id')->on('t_carts');
 
            // Common
            $table->timestamps();
@@ -40,6 +41,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('t_wine_orders');
+        Schema::dropIfExists('t_order_details');
     }
 };

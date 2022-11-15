@@ -25,30 +25,31 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 /**
  * AuthController
  */
-Route::post('/auth/login', [AuthController::class, "login"]);
-Route::get('/auth/logout', [AuthController::class, "logout"]);
-Route::post('/auth/registerUser', [AuthController::class, "registerUser"]);
-Route::post('/auth/deregisterUser', [AuthController::class, "deregisterUser"])->middleware('auth:sanctum');
+Route::post('/Auth/login', [AuthController::class, "login"]);
+Route::get('/Auth/logout', [AuthController::class, "logout"]);
+Route::post('/Auth/registerUser', [AuthController::class, "registerUser"]);
+Route::post('/Auth/deregisterUser', [AuthController::class, "deregisterUser"])->middleware('auth:sanctum');
 
 /**
  * WineController
  */
-Route::get('/wine/getWineList', [WineController::class, 'getWineList']);
-Route::get('/wine/getWineDetail', [WineController::class, 'getWineDetail']);
+Route::get('/Wine/getWineList', [WineController::class, 'getWineList']);
+Route::get('/Wine/getWineDetail', [WineController::class, 'getWineDetail']);
 
 /**
  * ShoppingController
  */
-Route::post('/shopping/getCartList', [ShoppingController::class, 'getCartList'])->middleware('auth:sanctum');
-Route::post('/shopping/updateCartList', [ShoppingController::class, 'updateCartList'])->middleware('auth:sanctum');
-Route::post('/shopping/confirmOrder', [ShoppingController::class, 'confirmOrder'])->middleware('auth:sanctum');
+Route::get('/Shopping/getCartList', [ShoppingController::class, 'getCartList'])->middleware('auth:sanctum');
+Route::post('/Shopping/updateCartItem', [ShoppingController::class, 'updateCartItem'])->middleware('auth:sanctum');
+Route::post('/Shopping/deleteCartItem', [ShoppingController::class, 'deleteCartItem'])->middleware('auth:sanctum');
+Route::post('/Shopping/confirmOrder', [ShoppingController::class, 'confirmOrder'])->middleware('auth:sanctum');
 
 /**
  * ReviewController
  */
-Route::post('/review/createReview', [ReviewController::class, 'createReview'])->middleware('auth:sanctum');
-Route::post('/review/updateReview', [ReviewController::class, 'updateReview'])->middleware('auth:sanctum');
-Route::post('/review/deleteReview', [ReviewController::class, 'deleteReview'])->middleware('auth:sanctum');
+Route::post('/Review/createReview', [ReviewController::class, 'createReview'])->middleware('auth:sanctum');
+Route::post('/Review/updateReview', [ReviewController::class, 'updateReview'])->middleware('auth:sanctum');
+Route::post('/Review/deleteReview', [ReviewController::class, 'deleteReview'])->middleware('auth:sanctum');
 
 // Route::group(['middleware' => ['logger']], function () {
 //     Route::get('/test/hoge', function() {
