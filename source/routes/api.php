@@ -40,8 +40,9 @@ Route::get('/Wine/getWineDetail', [WineController::class, 'getWineDetail']);
  * ShoppingController
  */
 Route::get('/Shopping/getCartList', [ShoppingController::class, 'getCartList'])->middleware('auth:sanctum');
-Route::post('/Shopping/updateCartItem', [ShoppingController::class, 'updateCartItem'])->middleware('auth:sanctum');
-Route::post('/Shopping/deleteCartItem', [ShoppingController::class, 'deleteCartItem'])->middleware('auth:sanctum');
+Route::post('/Shopping/addItem', [ShoppingController::class, 'addItem'])->middleware('auth:sanctum');
+Route::post('/Shopping/updateItem', [ShoppingController::class, 'updateItem'])->middleware('auth:sanctum');
+Route::post('/Shopping/deleteItem', [ShoppingController::class, 'deleteItem'])->middleware('auth:sanctum');
 Route::post('/Shopping/confirmOrder', [ShoppingController::class, 'confirmOrder'])->middleware('auth:sanctum');
 
 /**

@@ -62,7 +62,87 @@ class Shopping extends Model
         return $result;
     }
 
-    public static function updateCartItem(Request $request)
+    public static function addItem(Request $request)
+    {
+        // Get user from token
+        $user = User::getUserFromPlainToken($request);
+
+        // Store array type JSON
+        $wineId = $request['wineId'];
+
+        try {
+            // Start DB transaction
+            DB::beginTransaction();
+
+            // 1. Get current cart list
+            $cart_list = Shopping::select(
+                't_carts.id as cart_id',
+                't_carts.wine_id as wine_id',
+                't_carts.quantity as quantity',
+            )
+                ->where([
+                    ['t_carts.user_id', '=', $user['id']],
+                    ['t_carts.wine_id', '=', $wineId],
+                    ['t_carts.delete_flg', '=', false],
+                ])->get();
+
+            // convert Object data to array
+            $cart_list = json_decode(json_encode($cart_list), true);
+
+            // 2. If same item doesn't exist, add item
+            if (empty($cart_list)) {
+                Shopping::create([
+                    'user_id' => $user['id'],
+                    'wine_id' => $wineId['wineId'],
+                    'quantity' => 1, // Add 1 Item
+                    'created_user' => 'mine_backend',
+                    'updated_user' => 'mine_backend',
+                ]);
+
+            } else {
+                // Throw an exception, if 2 or more same item exists
+                if (count($cart_list) >= 2) {
+                    throw new \Exception(
+                        __('message.message.Unexcepted'),
+                        config('response.status.internal_server_error.code')
+                    );
+                }
+
+                // 3. If same item exists, add quantity
+                $current_quantity = $cart_list[0]['quantity'];
+                // Add 1 item to current quantity
+                $current_quantity += 1;
+
+                Shopping::where([
+                    ['t_carts.id', '=', $cart_list[0]['cart_id']],
+                    ['t_carts.user_id', '=', $user['id']],
+                    ['t_carts.delete_flg', '=', false],
+                ])
+                    ->update(
+                        [
+                            't_carts.quantity' => $current_quantity,
+                            't_carts.updated_at' => DB::raw('NOW()'),
+                            't_carts.updated_user' => 'mine_backend',
+                        ]
+                    );
+            }
+
+            // Commit transaction
+            DB::commit();
+
+        } catch (\Throwable$th) {
+            // Rollback transaction
+            DB::rollback();
+
+            // Return error
+            throw new \Exception(
+                $th->getMessage(),
+                $th->getCode(),
+            );
+        }
+    }
+
+    public static function updateItem(Request $request)
     {
         // Get user from token
         $user = User::getUserFromPlainToken($request);
@@ -109,11 +189,7 @@ class Shopping extends Model
                     );
                 }
 
-                // 3. If same item exists, add quantity
-                $current_quantity = $cart_list[0]['quantity'];
-                // Add requested quantity to current quantity
-                $current_quantity += $wineOrderList['quantity'];
-
+                // 3. If same item exists, update quantity
                 Shopping::where([
                     ['t_carts.id', '=', $cart_list[0]['cart_id']],
                     ['t_carts.user_id', '=', $user['id']],
@@ -121,7 +197,7 @@ class Shopping extends Model
                 ])
                     ->update(
                         [
-                            't_carts.quantity' => $current_quantity,
+                            't_carts.quantity' => $wineOrderList['quantity'],
                             't_carts.updated_at' => DB::raw('NOW()'),
                             't_carts.updated_user' => 'mine_backend',
                         ]
@@ -143,7 +219,7 @@ class Shopping extends Model
         }
     }
 
-    public static function deleteCartItem(Request $request)
+    public static function deleteItem(Request $request)
     {
         $user = User::getUserFromPlainToken($request);
 
@@ -199,11 +275,10 @@ class Shopping extends Model
 
             $order_insert_result = Orders::create([
                 'user_id' => $user['id'],
-                'delivery_date' => $delivery_date, 
+                'delivery_date' => $delivery_date,
                 'created_user' => 'mine_backend',
                 'updated_user' => 'mine_backend',
             ]);
-
 
             // Insert each order in wineList array
             foreach ($order_list as $order_item) {

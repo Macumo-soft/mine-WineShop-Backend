@@ -35,7 +35,40 @@ class ShoppingController extends Controller
         return ResponseHandler::success($response);
     }
 
-    public function updateCartItem(Request $request)
+    public function addItem(Request $request)
+    {
+
+        // Response
+        $response = [];
+
+        try {
+            // Define validation rules
+            $rules = [
+                'wineId' => 'required',
+            ];
+
+            // Validation Check
+            ValidationHandler::default($request, $rules);
+            
+            // Check if value exist
+            ValidationHandler::checkArrayValueExists($request);
+
+            // update cart data
+            return Shopping::addItem($request);
+
+        } catch (\Throwable$th) {
+            // Return error
+            return ResponseHandler::error(
+                $th->getCode(),
+                $th->getMessage()
+            );
+        }
+
+        // Return success
+        return ResponseHandler::success($response);
+    }
+
+    public function updateItem(Request $request)
     {
 
         // Response
@@ -54,7 +87,7 @@ class ShoppingController extends Controller
             ValidationHandler::checkArrayValueExists($request);
 
             // update cart data
-            Shopping::updateCartItem($request);
+            Shopping::updateItem($request);
 
         } catch (\Throwable$th) {
             // Return error
@@ -68,7 +101,7 @@ class ShoppingController extends Controller
         return ResponseHandler::success($response);
     }
 
-    public function deleteCartItem(Request $request)
+    public function deleteItem(Request $request)
     {
 
         // Response
@@ -87,7 +120,7 @@ class ShoppingController extends Controller
             ValidationHandler::checkArrayValueExists($request);
 
             // update cart data
-            Shopping::deleteCartItem($request);
+            Shopping::deleteItem($request);
 
         } catch (\Throwable$th) {
             // Return error
