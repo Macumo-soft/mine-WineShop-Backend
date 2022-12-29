@@ -126,7 +126,6 @@ class Wine extends Model
             'm_wine_detail.description as description',
             'm_wine_detail.abv as abv',
             'm_wine_delivery.stocks as stocks',
-            // 'm_wine_delivery.delivery_period as deliveryPeriod',
             DB::raw('(current_date + delivery_period) as deliveryDateFrom'),
             DB::raw('(current_date + delivery_period + 3) as deliveryDateTo'),
         )

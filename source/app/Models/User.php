@@ -80,6 +80,12 @@ class User extends Authenticatable
         return $user;
     }
 
+    /**
+     * Get user's token
+     *
+     * @param Request $request
+     * @return void
+     */
     public static function getUserFromHashedToken(Request $request)
     {
         $hashed_token = RequestHandler::getBearerToken($request);

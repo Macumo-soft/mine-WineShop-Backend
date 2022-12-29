@@ -51,13 +51,3 @@ Route::post('/Shopping/confirmOrder', [ShoppingController::class, 'confirmOrder'
 Route::post('/Review/createReview', [ReviewController::class, 'createReview'])->middleware('auth:sanctum');
 Route::post('/Review/updateReview', [ReviewController::class, 'updateReview'])->middleware('auth:sanctum');
 Route::post('/Review/deleteReview', [ReviewController::class, 'deleteReview'])->middleware('auth:sanctum');
-
-// Route::group(['middleware' => ['logger']], function () {
-//     Route::get('/test/hoge', function() {
-//         echo "hoge";
-//     });
-
-//     Route::get('/test/fuga', function() {
-//         echo "fuga";
-//     });
-// });

@@ -9,6 +9,12 @@ use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
+    /**
+     * Create wine's review
+     *
+     * @param Request $request
+     * @return void
+     */
     public function createReview(Request $request)
     {
         // Response
@@ -43,6 +49,12 @@ class ReviewController extends Controller
         return ResponseHandler::success($response);
     }
 
+    /**
+     * Update wine's review
+     *
+     * @param Request $request
+     * @return void
+     */
     public function updateReview(Request $request)
     {
         // Response

@@ -30,6 +30,12 @@ class Shopping extends Model
         'delete_flg',
     ];
 
+    /**
+     * Get user's cart list
+     *
+     * @param Request $request
+     * @return void
+     */
     public static function getCartList(Request $request)
     {
         $user = User::getUserFromPlainToken($request);
@@ -62,6 +68,12 @@ class Shopping extends Model
         return $result;
     }
 
+    /**
+     * Add wine item to cart
+     *
+     * @param Request $request
+     * @return void
+     */
     public static function addItem(Request $request)
     {
         // Get user from token
@@ -93,7 +105,7 @@ class Shopping extends Model
             if (empty($cart_list)) {
                 Shopping::create([
                     'user_id' => $user['id'],
-                    'wine_id' => $wineId['wineId'],
+                    'wine_id' => $wineId,
                     'quantity' => 1, // Add 1 Item
                     'created_user' => 'mine_backend',
                     'updated_user' => 'mine_backend',
@@ -142,6 +154,12 @@ class Shopping extends Model
         }
     }
 
+    /**
+     * Update wine item in user's cart list
+     *
+     * @param Request $request
+     * @return void
+     */
     public static function updateItem(Request $request)
     {
         // Get user from token
@@ -219,6 +237,12 @@ class Shopping extends Model
         }
     }
 
+    /**
+     * Delete wine item in user's cart list
+     *
+     * @param Request $request
+     * @return void
+     */
     public static function deleteItem(Request $request)
     {
         $user = User::getUserFromPlainToken($request);

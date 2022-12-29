@@ -10,6 +10,12 @@ use Illuminate\Http\Request;
 
 class WineController extends Controller
 {
+    /**
+     * Get all wine list
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getWineList(Request $request)
     {
         // Response
@@ -57,6 +63,12 @@ class WineController extends Controller
 
     }
 
+    /**
+     * Get wine detail
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getWineDetail(Request $request)
     {
         // Response

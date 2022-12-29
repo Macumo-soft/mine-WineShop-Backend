@@ -43,7 +43,6 @@ class UserController extends Controller
 
         // Return success
         return ResponseHandler::success($response);
-
     }
 
 }

@@ -38,8 +38,9 @@ class Reviews extends Model
     public static function selectWineReviews(array $request_params)
     {
         $result = Reviews::select(
-            't_reviews.wine_id as id',
+            't_reviews.wine_id as wineId',
             'users.name as username',
+            't_reviews.id as id',
             't_reviews.review_score as score',
             't_reviews.review_title as title',
             't_reviews.review_comment as comment',
@@ -47,7 +48,10 @@ class Reviews extends Model
             DB::raw('t_reviews.created_at <> t_reviews.updated_at as edited'),
         )
             ->join('users', 't_reviews.user_id', '=', 'users.id')
-            ->where('t_reviews.wine_id', '=', $request_params['wineId'])
+            ->where([
+                ['t_reviews.wine_id', '=', $request_params['wineId']],
+                ['t_reviews.delete_flg', '=', false],
+            ])
             ->get();
 
         return $result;

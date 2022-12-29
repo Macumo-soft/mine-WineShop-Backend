@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    /**
+     * Login
+     *
+     * @param Request $request
+     * @return void
+     */
     public function login(Request $request)
     {
         // Response
@@ -71,6 +77,12 @@ class AuthController extends Controller
         return ResponseHandler::success($response);
     }
 
+    /**
+     * Logout from account
+     *
+     * @param Request $request
+     * @return void
+     */
     public function logout(Request $request)
     {
         // Response
@@ -100,6 +112,12 @@ class AuthController extends Controller
         return ResponseHandler::success($response, "User deregistered successfully");
     }
 
+    /**
+     * Register new user
+     *
+     * @param Request $request
+     * @return void
+     */
     public function registerUser(Request $request)
     {
         // Response
@@ -150,6 +168,12 @@ class AuthController extends Controller
         return ResponseHandler::success($response, "User created successfully");
     }
 
+    /**
+     * Deregister User
+     *
+     * @param Request $request
+     * @return void
+     */
     public function deregisterUser(Request $request)
     {
         // Response

@@ -9,6 +9,12 @@ use Illuminate\Http\Request;
 
 class ShoppingController extends Controller
 {
+    /**
+     * Get cart list
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getCartList(Request $request)
     {
         // Response
@@ -35,6 +41,12 @@ class ShoppingController extends Controller
         return ResponseHandler::success($response);
     }
 
+    /**
+     * Add wine item to user's add item
+     *
+     * @param Request $request
+     * @return void
+     */
     public function addItem(Request $request)
     {
 
@@ -68,6 +80,12 @@ class ShoppingController extends Controller
         return ResponseHandler::success($response);
     }
 
+    /**
+     * Update wine item in user's cart list
+     *
+     * @param Request $request
+     * @return void
+     */
     public function updateItem(Request $request)
     {
 
@@ -101,6 +119,12 @@ class ShoppingController extends Controller
         return ResponseHandler::success($response);
     }
 
+    /**
+     * Delete wine item from user's cart list
+     *
+     * @param Request $request
+     * @return void
+     */
     public function deleteItem(Request $request)
     {
 
